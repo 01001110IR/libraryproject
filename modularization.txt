@@ -1,0 +1,16 @@
+my_library
+|- book_model.py ------>  done 
+|- customer_model.py ------> done
+|- loans_model.py
+|- app.py
+|- routes  
+    |- book_routes.py    -----> done 
+    |- customer_routes.py ------> done
+    |- loans_routes.py
+
+
+
+
+    books| customer| loan 
+    -----|---------|---------
+    done |         |
