@@ -1,13 +1,17 @@
 from flask import Flask, jsonify, request
-from customers_model import db, Customer  # Import db and Customer
+from book_model import Book
 
+from customers_model import db, Customer  # Import db and Customer
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///customers.db,sqlite:///customers.db'
+# Database URI Configuration with semicolons
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.db'
 db.init_app(app)  # Initialize SQLAlchemy with your app
 
-
+# Create the database tables
+with app.app_context():
+    db.create_all()
 
 @app.route('/customers', methods=['GET'])
 def get_customers():
@@ -33,11 +37,11 @@ def add_customer():
     db.session.commit()
 
     return jsonify({'message': 'Customer added successfully', 'id': customer.id}), 201
+
 @app.route('/customers/<int:customer_id>', methods=['PUT'])
 def update_customer(customer_id):
     customer = Customer.query.get(customer_id)
     if not customer:
-        # אם לקוח על ה-ID הנתון אינו קיים, ניצור לקוח חדש עם ה-ID הנתון
         data = request.get_json()
         if not data:
             return jsonify({'message': 'Data is required'}), 400
@@ -49,7 +53,6 @@ def update_customer(customer_id):
 
         return jsonify({'message': 'Customer created successfully', 'id': customer_id}), 201
 
-    # אם לקוח על ה-ID הנתון קיים, נעדכן את הפרטים שלו
     data = request.get_json()
     if not data:
         return jsonify({'message': 'Data is required'}), 400
@@ -78,6 +81,13 @@ def delete_customer(customer_id):
     db.session.commit()
     return jsonify({'message': 'Customer deleted successfully'})
 
+@app.route('/books', methods=['GET'])
+def get_books():
+    books = Book.query.all()
+    book_list = [{'id': book.id, 'name': book.name, 'author': book.author, 'year_published': book.year_published, 'loan_type': book.loan_type} for book in books]
+    return jsonify(book_list)
+
+
+
 if __name__ == '__main__':
-   
     app.run(debug=True)

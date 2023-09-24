@@ -1,18 +1,29 @@
-from flask import jsonify
 from flask_sqlalchemy import SQLAlchemy
-from book_model import *
+
+
+
 
 db = SQLAlchemy()
 
+# Define the Customer model
 class Customer(db.Model):
-    __tablename__ = 'customers'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
-    email = db.Column(db.String(255))
-    phone_number = db.Column(db.String(20))
-    state = db.Column(db.String(50))
-    country = db.Column(db.String(50))
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+    phone_number = db.Column(db.String(50), nullable=False)
+    age = db.Column(db.Integer, nullable=False)  # Include 'age' attribute
+    state = db.Column(db.String(50), nullable=False)
+    cuntry = db.Column(db.String(50), nullable=False)
 
+    def __init__(self, name, email, phone_number, age, state, cuntry):
+        self.name = name
+        self.email = email
+        self.phone_number = phone_number
+        self.age = age  # Initialize 'age'
+        self.state = state
+        self.cuntry = cuntry
+        
+        
     def json(self):
         return {
             'id': self.id,
@@ -20,14 +31,7 @@ class Customer(db.Model):
             'email': self.email,
             'phone_number': self.phone_number,
             'state': self.state,
-            'country': self.country
+            'cuntry': self.cuntry,
+            'age' : self.age
         }
-        
-    def update_customer_id(customer_id):
-        customer = customer.query.get(customer_id)
-        if customer is None:
-         return jsonify({'message': 'customer not found'}), 404
-
-        customer.id = 1
-        db.session.commit()
-        return jsonify({'message': 'customer updated successfully'})
+    
